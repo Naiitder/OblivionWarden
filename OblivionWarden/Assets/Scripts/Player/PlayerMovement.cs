@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
@@ -7,27 +8,20 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float rotationSpeed = 10f;
     CharacterController characterController;
 
+    [SerializeField]LayerMask groundMask;
+    Camera mainCamera;
     GameObject cameraObject;
-    Transform myTransform;
 
-    Animator animator;
-    private int movementSpeedHash;
+    Transform myTransform;
 
     private void Awake()
     {
         cameraObject = GameObject.Find("CinemachineCamera");
         characterController = GetComponent<CharacterController>();
         myTransform = transform;
-        animator = GetComponent<Animator>();
-        movementSpeedHash = Animator.StringToHash("MovementSpeed");
+        mainCamera = Camera.main;
     }
 
-    void Update()
-    {
-        HandleMovement();
-        HandleRotation();
-        UpdateMovementAnimationValues();
-    }
 
     public void HandleMovement()
     {
@@ -57,16 +51,38 @@ public class PlayerMovement : MonoBehaviour
         myTransform.rotation = targetRotation;
     }
 
-    public void UpdateMovementAnimationValues()
+
+
+    public void HandleAimRotation()
     {
-        float v = 0;
+        Vector3 targetDir = Vector3.zero;
 
-        if (InputController.instance.MoveAmount > 0 && InputController.instance.MoveAmount < 0.55f) v = 0.5f;
-        else if (InputController.instance.MoveAmount > 0.55f) v = 1;
-        else if (InputController.instance.MoveAmount < 0 && InputController.instance.MoveAmount > -0.55f) v = -0.5f;
-        else if (InputController.instance.MoveAmount < -0.55f) v = -1;
-        else v = 0;
+        if (InputController.instance.LookInput == Vector2.zero)
+        {
+            targetDir = GetMouseWorldPosition() - myTransform.position;
+            targetDir.y = 0; 
+        }
+        else 
+        {
+            targetDir = new Vector3(InputController.instance.LookHorizontalInput,
+                0, InputController.instance.LookVerticalInput);
+        }
 
-        animator.SetFloat(movementSpeedHash, v, 0.1f, Time.deltaTime);
+        if (targetDir.sqrMagnitude > 0.01f) 
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(targetDir);
+            myTransform.rotation = Quaternion.Slerp(myTransform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
     }
+
+    private Vector3 GetMouseWorldPosition()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundMask))
+        {
+            return hit.point; 
+        }
+        return myTransform.position; 
+    }
+
 }
