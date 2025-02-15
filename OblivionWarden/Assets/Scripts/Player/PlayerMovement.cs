@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     GameObject cameraObject;
 
     Transform myTransform;
+    [SerializeField] Transform pivotTransform;
 
     private void Awake()
     {
@@ -51,6 +52,16 @@ public class PlayerMovement : MonoBehaviour
         myTransform.rotation = targetRotation;
     }
 
+    public void HandleAttackRotation()
+    {
+        Vector3 targetDir = pivotTransform.forward;
+        targetDir.y = 0;
+
+        Quaternion targetRotation = Quaternion.LookRotation(targetDir);
+        myTransform.rotation = Quaternion.Slerp(myTransform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+    }
+
 
 
     public void HandleAimRotation()
@@ -59,30 +70,37 @@ public class PlayerMovement : MonoBehaviour
 
         if (InputController.instance.LookInput == Vector2.zero)
         {
-            targetDir = GetMouseWorldPosition() - myTransform.position;
-            targetDir.y = 0; 
+            targetDir = GetMouseWorldPosition() - pivotTransform.position;
+            targetDir.y = 0;
+
         }
-        else 
+        else
         {
             targetDir = new Vector3(InputController.instance.LookHorizontalInput,
                 0, InputController.instance.LookVerticalInput);
+
         }
 
-        if (targetDir.sqrMagnitude > 0.01f) 
+        if (targetDir.sqrMagnitude > 0.01f)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(targetDir);
-            myTransform.rotation = Quaternion.Slerp(myTransform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            pivotTransform.rotation = Quaternion.LookRotation(targetDir);
+            //pivotTransform.rotation = Quaternion.Slerp(pivotTransform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
+
+
     }
 
     private Vector3 GetMouseWorldPosition()
     {
-        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundMask))
+        Ray InteractionRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit InteractionInfo;
+        if (Physics.Raycast(InteractionRay, out InteractionInfo, Mathf.Infinity, groundMask))
         {
-            return hit.point; 
+
+            return InteractionInfo.point;
         }
-        return myTransform.position; 
+
+        return pivotTransform.position;
     }
 
 }

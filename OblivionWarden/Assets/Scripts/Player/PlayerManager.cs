@@ -31,7 +31,8 @@ public class PlayerManager : MonoBehaviour
     void Update()
     {
         playerMovement.HandleMovement();
-        if (animator.GetBool(basicAttackHash)) playerMovement.HandleAimRotation(); else playerMovement.HandleRotation();
+        playerMovement.HandleAimRotation();
+        if (!animator.GetBool(basicAttackHash)) playerMovement.HandleRotation(); else playerMovement.HandleAttackRotation();
         UpdateMovementAnimationValues();
     }
 
