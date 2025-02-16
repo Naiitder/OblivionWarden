@@ -4,11 +4,16 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     PlayerMovement playerMovement;
+    public PlayerStats CharacterStats;
+
     [SerializeField] GameObject prefabToSpawn;
 
     Animator animator;
     private int movementSpeedHash;
     private int basicAttackHash;
+    private int deathHash;
+
+
     private float attackInterval = 2.0f;
     [SerializeField] GameObject spawnPosition;
 
@@ -21,6 +26,10 @@ public class PlayerManager : MonoBehaviour
         animator = GetComponent<Animator>();
         movementSpeedHash = Animator.StringToHash("MovementSpeed");
         basicAttackHash = Animator.StringToHash("BasicAttack");
+        deathHash = Animator.StringToHash("isDead");
+        CharacterStats = GetComponent<PlayerStats>();
+
+        CharacterStats.OnDeath += Die;
     }
 
     private void Start()
@@ -30,6 +39,7 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
+        if (CharacterStats.IsDead) return;
         playerMovement.HandleMovement();
         playerMovement.HandleAimRotation();
         if (!animator.GetBool(basicAttackHash)) playerMovement.HandleRotation(); else playerMovement.HandleAttackRotation();
@@ -39,7 +49,7 @@ public class PlayerManager : MonoBehaviour
 
     private IEnumerator AttackRoutine()
     {
-        while (!isDead)
+        while (!CharacterStats.IsDead)
         {
             yield return new WaitForSeconds(attackInterval);
 
@@ -49,7 +59,12 @@ public class PlayerManager : MonoBehaviour
 
             animator.SetBool(basicAttackHash, false);
 
-            Instantiate(prefabToSpawn, spawnPosition.transform.position, transform.rotation);
+            GameObject projectile = Instantiate(prefabToSpawn, spawnPosition.transform.position, transform.rotation);
+            Projectile projectileScript = projectile.GetComponent<Projectile>();
+            if (projectileScript != null)
+            {
+                projectileScript.Damage = CharacterStats.Dmg;
+            }
         }
     }
 
@@ -70,5 +85,15 @@ public class PlayerManager : MonoBehaviour
         else v = 0;
 
         animator.SetFloat(movementSpeedHash, v, 0.1f, Time.deltaTime);
+    }
+
+    void Die()
+    {
+        if (CharacterStats.IsDead) return;
+        CharacterStats.IsDead = true;
+
+        animator.SetBool(deathHash, true);
+
+        Destroy(gameObject, 2f);
     }
 }

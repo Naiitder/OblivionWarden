@@ -16,7 +16,7 @@ public class GameController : MonoBehaviour
         if (instance == null) instance = this;
         else Destroy(gameObject);
 
-        Application.targetFrameRate = 60;
+        Application.targetFrameRate = 120;
         QualitySettings.vSyncCount = 0;
     }
 
@@ -41,7 +41,7 @@ public class GameController : MonoBehaviour
         if (scoreText != null)
         {
             score += scoreToAdd;
-            timeText.text = score.ToString();
+            scoreText.text = score.ToString();
         }
     }
 }
