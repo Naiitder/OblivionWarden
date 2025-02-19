@@ -9,10 +9,8 @@ public class PlayerStats : CharacterStats
     float lerpSpeed = 2f;
     private float delayBeforeLerp = 0.5f;
 
-    SkinnedMeshRenderer meshRenderer;
-
     Coroutine easeHealthCoroutine;
-    private Coroutine damageFlashCoroutine;
+
     
     public override void Awake()
     {
@@ -21,7 +19,7 @@ public class PlayerStats : CharacterStats
         easeHealthSlider.maxValue = maxHealth;
         healthSlider.value = currentHealth;
         easeHealthSlider.value = currentHealth;
-        meshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+
     }
 
     public override void TakeDamage(int dmg)
@@ -35,11 +33,6 @@ public class PlayerStats : CharacterStats
 
         easeHealthCoroutine = StartCoroutine(nameof(UpdateEaseHealth));
 
-
-        if (damageFlashCoroutine != null)
-            StopCoroutine(nameof(DamageFlashRoutine));
-
-        damageFlashCoroutine = StartCoroutine(nameof(DamageFlashRoutine));
     }
 
     IEnumerator UpdateEaseHealth()
@@ -63,14 +56,5 @@ public class PlayerStats : CharacterStats
         easeHealthSlider.value = targetValue; 
     }
 
-    private IEnumerator DamageFlashRoutine()
-    {
-        meshRenderer.material.color = Color.red;
 
-        yield return new WaitForSeconds(1f);
-
-        meshRenderer.material.color = Color.white;
-
-        damageFlashCoroutine = null;
-    }
 }

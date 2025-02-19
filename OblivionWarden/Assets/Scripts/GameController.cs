@@ -4,6 +4,7 @@ using TMPro;
 public class GameController : MonoBehaviour
 {
     public static GameController instance;
+    public PlayerManager PlayerManager;
 
     float time = 0;
     [SerializeField] TMP_Text timeText;

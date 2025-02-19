@@ -35,6 +35,8 @@ public class Enemy : MonoBehaviour
         enemyAgent.speed = movementSpeed;
 
         CharacterStats.OnDeath += Die;
+
+        //player = GameController.instance.PlayerManager;
     }
 
     public virtual void Update()

@@ -19,8 +19,9 @@ public class RangedEnemy : Enemy
     public override void Update()
     {
         base.Update();
-        if (isInRange() && !isAttacking && !CharacterStats.IsDead) StartRangedAttack();
-        else if ((!isInRange() || CharacterStats.IsDead) && isAttacking) StopRangedAttack();
+        if (isInRange() && !isAttacking && !CharacterStats.IsDead && !animator.GetBool(basicAttackHash)) StartRangedAttack();
+        else if ((!isInRange() || CharacterStats.IsDead) && isAttacking || animator.GetBool(basicAttackHash)) StopRangedAttack();
+        if(isAttacking) RotateTowardsPlayer();
     }
 
 
@@ -36,7 +37,6 @@ public class RangedEnemy : Enemy
         isAttacking = true;
         animator.SetBool(walkingHash, false);
         animator.SetBool(shottingHash, true);
-        ShootProjectile();
         InvokeRepeating(nameof(ShootProjectile), attackRate, attackRate);
     }
 
@@ -45,5 +45,19 @@ public class RangedEnemy : Enemy
         if (player == null) return;
 
         GameObject projectile = Instantiate(projectilePrefab, spawnPosition.position, transform.rotation);
+        Projectile projectileScript = projectile.GetComponent<Projectile>();
+        if (projectileScript != null)
+        {
+            projectileScript.Damage = CharacterStats.Dmg;
+        }
+    }
+
+    void RotateTowardsPlayer()
+    {
+        Vector3 direction = (player.transform.position - transform.position).normalized;
+        direction.y = 0; 
+
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f); 
     }
 }
