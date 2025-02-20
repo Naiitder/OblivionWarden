@@ -36,7 +36,7 @@ public class Enemy : MonoBehaviour
 
         CharacterStats.OnDeath += Die;
 
-        //player = GameController.instance.PlayerManager;
+        player = GameController.instance.PlayerManager;
     }
 
     public virtual void Update()

@@ -140,7 +140,7 @@ MonoBehaviour:
   dmgRate: 1
   projectilePrefab: {fileID: 6616310004062811938, guid: 99666fe607cd65e46a3f4b709f60d5b7, type: 3}
   spawnPosition: {fileID: 2605938442405894353}
-  attackRate: 2
+  attackRate: 2.25
 --- !u!114 &4796438745869312210
 MonoBehaviour:
   m_ObjectHideFlags: 0
