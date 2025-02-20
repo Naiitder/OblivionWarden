@@ -6,16 +6,17 @@ public class PlayerManager : MonoBehaviour
     PlayerMovement playerMovement;
     public PlayerStats CharacterStats;
 
-    [SerializeField] GameObject prefabToSpawn;
-
     Animator animator;
     private int movementSpeedHash;
     private int basicAttackHash;
     private int deathHash;
 
-
+    [Header("Projectile Settings")]
+    [SerializeField] private int currentProjectileCount = 1;
+    [SerializeField] private float projectileSpreadAngle = 15f;
     private float attackInterval = 2.0f;
     [SerializeField] GameObject spawnPosition;
+    [SerializeField] GameObject prefabToSpawn;
 
     [Header("PlayerFlags")]
     [SerializeField] bool isDead = false;
@@ -58,15 +59,32 @@ public class PlayerManager : MonoBehaviour
             yield return new WaitUntil(() => AnimationFinished(basicAttackHash));
 
             animator.SetBool(basicAttackHash, false);
+            float startAngle = -(projectileSpreadAngle * (currentProjectileCount - 1)) / 2f;
 
-            GameObject projectile = Instantiate(prefabToSpawn, spawnPosition.transform.position, transform.rotation);
-            Projectile projectileScript = projectile.GetComponent<Projectile>();
-            if (projectileScript != null)
+            for (int i = 0; i < currentProjectileCount; i++)
             {
-                projectileScript.Damage = CharacterStats.Dmg;
+                Quaternion rotation = transform.rotation * Quaternion.Euler(0, startAngle + (projectileSpreadAngle * i), 0);
+                GameObject projectile = Instantiate(prefabToSpawn, spawnPosition.transform.position, rotation);
+
+                Projectile projectileScript = projectile.GetComponent<Projectile>();
+                if (projectileScript != null)
+                {
+                    projectileScript.Damage = CharacterStats.Dmg;
+                }
             }
         }
     }
+
+    public void UpdateAttackInterval(float change)
+    {
+        attackInterval = Mathf.Max(0.2f, attackInterval + change);
+    }
+
+    public void UpdateProjectileCount(int increase)
+    {
+        currentProjectileCount += increase;
+    }
+
 
     private bool AnimationFinished(int animationHash)
     {
