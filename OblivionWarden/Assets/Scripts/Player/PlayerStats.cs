@@ -14,12 +14,17 @@ public class PlayerStats : CharacterStats
     
     public override void Awake()
     {
-        base.Awake();  
+        base.Awake();
+        UpdateHealthBarsMaximums();
+
+    }
+
+    public void UpdateHealthBarsMaximums()
+    {
         healthSlider.maxValue = maxHealth;
         easeHealthSlider.maxValue = maxHealth;
         healthSlider.value = currentHealth;
         easeHealthSlider.value = currentHealth;
-
     }
 
     public override void TakeDamage(int dmg)

@@ -1,5 +1,7 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
+
 
 public class GameController : MonoBehaviour
 {
@@ -12,6 +14,12 @@ public class GameController : MonoBehaviour
     int score = 0;
     [SerializeField] TMP_Text scoreText;
 
+    [SerializeField] GameObject deadPanel;
+
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] public AudioClip levelUpSound;
+    [SerializeField] public AudioClip dieSound;
+
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -19,6 +27,9 @@ public class GameController : MonoBehaviour
 
         Application.targetFrameRate = 120;
         QualitySettings.vSyncCount = 0;
+
+        deadPanel.SetActive(false);
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -44,5 +55,20 @@ public class GameController : MonoBehaviour
             score += scoreToAdd;
             scoreText.text = score.ToString();
         }
+    }
+
+    public void ActiveDeadPanel()
+    {
+        deadPanel.SetActive(true);
+    }
+
+    public void RestartButton(string name)
+    {
+        SceneManager.LoadScene(name);
+    }
+
+    public void PlayAudioClip(AudioClip clip)
+    {
+        audioSource.PlayOneShot(clip);
     }
 }

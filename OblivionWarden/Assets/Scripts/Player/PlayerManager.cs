@@ -21,6 +21,8 @@ public class PlayerManager : MonoBehaviour
     [Header("PlayerFlags")]
     [SerializeField] bool isDead = false;
 
+    AudioSource audioSource;
+
     private void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
@@ -29,6 +31,8 @@ public class PlayerManager : MonoBehaviour
         basicAttackHash = Animator.StringToHash("BasicAttack");
         deathHash = Animator.StringToHash("isDead");
         CharacterStats = GetComponent<PlayerStats>();
+
+        audioSource = GetComponent<AudioSource>();
 
         CharacterStats.OnDeath += Die;
     }
@@ -66,12 +70,14 @@ public class PlayerManager : MonoBehaviour
                 Quaternion rotation = transform.rotation * Quaternion.Euler(0, startAngle + (projectileSpreadAngle * i), 0);
                 GameObject projectile = Instantiate(prefabToSpawn, spawnPosition.transform.position, rotation);
 
+
                 Projectile projectileScript = projectile.GetComponent<Projectile>();
                 if (projectileScript != null)
                 {
                     projectileScript.Damage = CharacterStats.Dmg;
                 }
             }
+            audioSource.Play();
         }
     }
 
@@ -112,6 +118,7 @@ public class PlayerManager : MonoBehaviour
 
         animator.SetBool(deathHash, true);
 
-        Destroy(gameObject, 2f);
+        GameController.instance.ActiveDeadPanel();
+        GameController.instance.PlayAudioClip(GameController.instance.dieSound);
     }
 }

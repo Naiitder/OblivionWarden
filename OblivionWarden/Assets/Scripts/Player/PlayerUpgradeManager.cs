@@ -63,6 +63,7 @@ public class PlayerUpgradeManager : MonoBehaviour
                 upgradeStats.healthLevel++;
                 playerStats.MaxHealth += Mathf.RoundToInt(healthIncreasePerLevel);
                 playerStats.CurrentHealth += Mathf.RoundToInt(healthIncreasePerLevel);
+                playerStats.UpdateHealthBarsMaximums();
                 break;
 
             case UpgradeType.AttackSpeed:

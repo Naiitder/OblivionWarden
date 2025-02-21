@@ -7,6 +7,7 @@ public class LevelUp : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             UpgradeUIManager.instance.ShowUpgradeOptions();
+            GameController.instance.PlayAudioClip(GameController.instance.levelUpSound);
             Destroy(gameObject);
         }
     }
