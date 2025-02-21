@@ -138,6 +138,8 @@ MonoBehaviour:
   movementSpeed: 3.5
   scoreDrop: 10
   dmgRate: 1
+  dropPrefab: {fileID: 7421419854779225719, guid: 5230bae8460309a488a37401a688525b, type: 3}
+  dropChance: 0.1
   projectilePrefab: {fileID: 6616310004062811938, guid: 99666fe607cd65e46a3f4b709f60d5b7, type: 3}
   spawnPosition: {fileID: 2605938442405894353}
   attackRate: 2.25

@@ -11,11 +11,9 @@ public class UpgradeOptionUI : MonoBehaviour
     [SerializeField] private Button upgradeButton;
 
     private UpgradeOption currentUpgrade;
-    private UpgradeUIManager upgradeUIManager;
 
     private void Awake()
     {
-        upgradeUIManager = GetComponentInParent<UpgradeUIManager>();
         upgradeButton.onClick.AddListener(OnUpgradeSelected);
     }
 
@@ -23,6 +21,7 @@ public class UpgradeOptionUI : MonoBehaviour
     {
         currentUpgrade = upgrade;
         iconImage.sprite = upgrade.Icon;
+        iconImage.preserveAspect = true;
         titleText.text = upgrade.Title;
         descriptionText.text = upgrade.Description;
     }
@@ -31,7 +30,7 @@ public class UpgradeOptionUI : MonoBehaviour
     {
         if (currentUpgrade != null)
         {
-            upgradeUIManager.SelectUpgrade(currentUpgrade);
+            UpgradeUIManager.instance.SelectUpgrade(currentUpgrade);
         }
     }
 }

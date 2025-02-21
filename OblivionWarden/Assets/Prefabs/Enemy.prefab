@@ -1004,6 +1004,8 @@ MonoBehaviour:
   movementSpeed: 3.5
   scoreDrop: 10
   dmgRate: 1
+  dropPrefab: {fileID: 7421419854779225719, guid: 5230bae8460309a488a37401a688525b, type: 3}
+  dropChance: 0.1
 --- !u!114 &4410345011214872549
 MonoBehaviour:
   m_ObjectHideFlags: 0

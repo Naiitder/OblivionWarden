@@ -4,12 +4,27 @@ using System.Linq;
 
 public class UpgradeUIManager : MonoBehaviour
 {
+    public static UpgradeUIManager instance;
+
     [Header("UI References")]
     [SerializeField] private GameObject upgradePanel;
     [SerializeField] private UpgradeOptionUI[] upgradeOptions;
 
     [Header("Dependencies")]
     [SerializeField] private PlayerUpgradeManager upgradeManager;
+
+    [Header("Upgrade Icons")]
+    [SerializeField] private Sprite damageIcon;
+    [SerializeField] private Sprite healthIcon;
+    [SerializeField] private Sprite attackSpeedIcon;
+    [SerializeField] private Sprite projectileIcon;
+
+
+    private void Awake()
+    {
+        if (instance == null) instance = this;
+        else Destroy(gameObject);
+    }
 
     private void Start()
     {
@@ -23,7 +38,6 @@ public class UpgradeUIManager : MonoBehaviour
 
         if (availableUpgrades.Count == 0)
         {
-            Debug.Log("No hay mejoras disponibles!");
             return;
         }
 
@@ -56,10 +70,12 @@ public class UpgradeUIManager : MonoBehaviour
             availableUpgrades.Add(new UpgradeOption
             {
                 Type = UpgradeType.Damage,
-                Title = "Aumentar Daño",
+                Title = "Daño",
                 Description = "Aumenta el daño base en 5",
-                Icon = Resources.Load<Sprite>("Icons/Damage") 
+                Icon = damageIcon
+
             });
+
         }
 
         if (upgradeManager.CanUpgrade(UpgradeType.Health))
@@ -67,9 +83,9 @@ public class UpgradeUIManager : MonoBehaviour
             availableUpgrades.Add(new UpgradeOption
             {
                 Type = UpgradeType.Health,
-                Title = "Aumentar Vida",
+                Title = "Vida",
                 Description = "Aumenta la vida máxima en 20",
-                Icon = Resources.Load<Sprite>("Icons/Health")
+                Icon = healthIcon
             });
         }
 
@@ -78,9 +94,9 @@ public class UpgradeUIManager : MonoBehaviour
             availableUpgrades.Add(new UpgradeOption
             {
                 Type = UpgradeType.AttackSpeed,
-                Title = "Velocidad de Ataque",
+                Title = "Cadencia",
                 Description = "Reduce el tiempo entre ataques en 0.2s",
-                Icon = Resources.Load<Sprite>("Icons/AttackSpeed")
+                Icon = attackSpeedIcon
             });
         }
 
@@ -89,9 +105,9 @@ public class UpgradeUIManager : MonoBehaviour
             availableUpgrades.Add(new UpgradeOption
             {
                 Type = UpgradeType.ProjectileCount,
-                Title = "Proyectiles Múltiples",
+                Title = "Proyectiles",
                 Description = "Añade un proyectil adicional",
-                Icon = Resources.Load<Sprite>("Icons/Projectile")
+                Icon = projectileIcon
             });
         }
 

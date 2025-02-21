@@ -21,6 +21,11 @@ public class Enemy : MonoBehaviour
 
    protected NavMeshAgent enemyAgent;
 
+    [Header("Drop Settings")]
+    [SerializeField] private GameObject dropPrefab; 
+    [SerializeField] [Range(0f, 1f)] private float dropChance = 0.1f; 
+
+
     public virtual void Awake()
     {
         animator = GetComponentInChildren<Animator>();
@@ -100,6 +105,12 @@ public class Enemy : MonoBehaviour
         animator.SetBool(deathHash, true);
 
         GameController.instance.UpdateScore(scoreDrop);
+
+
+        if (dropPrefab != null && UnityEngine.Random.value <= dropChance)
+        {
+            Instantiate(dropPrefab, transform.position+Vector3.up, Quaternion.identity);
+        }
 
         Destroy(gameObject, 2f);
     }
